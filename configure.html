@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Tooplate">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
+
+    <title>JEM NETSEC - Configure Now</title>
+
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+
+    <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.css">
+
+    <link rel="stylesheet" type="text/css" href="assets/css/owl-carousel.css">
+
+    <link rel="stylesheet" href="assets/css/tooplate-artxibition.css">
+<!--
+
+JEM NETSEC
+
+
+-->
+    </head>
+    
+    <body>
+    
+    <!-- ***** Preloader Start ***** -->
+    <div id="js-preloader" class="js-preloader">
+      <div class="preloader-inner">
+        <span class="dot"></span>
+        <div class="dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+    <!-- ***** Preloader End ***** -->
+    
+    <!-- ***** Pre HEader ***** -->
+    <div class="pre-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-sm-6">
+                    <span>Hey! Secure your transactions over network</span>
+                </div>
+                <div class="col-lg-6 col-sm-6">
+                    <div class="text-button">
+                        <a href="about.html">Contact Us Now! <i class="fa fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ***** Header Area Start ***** -->
+    <header class="header-area header-sticky">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <nav class="main-nav">
+                        <!-- ***** Logo Start ***** -->
+                        <a href="index.html" class="logo">JEM<em>NETSEC</em></a>
+                        <!-- ***** Logo End ***** -->
+                        <!-- ***** Menu Start ***** -->
+                        <ul class="nav">
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="about.html">About Us</a></li> 
+                            <li><a href="configure.html" class="active">Configure Now</a></li> 
+                        </ul>        
+                        <a class='menu-trigger'>
+                            <span>Menu</span>
+                        </a>
+                        <!-- ***** Menu End ***** -->
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- ***** Header Area End ***** -->
+
+    <!-- ***** About Us Page ***** -->
+    <div class="page-heading-shows-events">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2>Secure your Network Now!</h2>
+                    <span>Configure your network for secure transactions right now.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h2>1. Set Up Azure Virtual Network (VNet)</h2>
+        <h3>Create a VNet</h3>
+        <p>Go to the Azure portal, navigate to "Create a resource" and select "Virtual Network". Configure the VNet with appropriate address space (e.g., 10.0.0.0/16). Create subnets within the VNet (e.g., frontend subnet: 10.0.1.0/24, backend subnet: 10.0.2.0/24, and DMZ subnet: 10.0.3.0/24).</p>
+        <pre><code># Azure CLI commands to create VNet and subnets
+az network vnet create --name FintechVNet --resource-group FintechResourceGroup --address-prefix 10.0.0.0/16
+az network vnet subnet create --vnet-name FintechVNet --resource-group FintechResourceGroup --name FrontendSubnet --address-prefix 10.0.1.0/24
+az network vnet subnet create --vnet-name FintechVNet --resource-group FintechResourceGroup --name BackendSubnet --address-prefix 10.0.2.0/24
+az network vnet subnet create --vnet-name FintechVNet --resource-group FintechResourceGroup --name DMZSubnet --address-prefix 10.0.3.0/24
+        </code></pre>
+
+        <h2>2. Create Virtual Machines (VMs)</h2>
+        <h3>Create VMs for Application Components</h3>
+        <p>Navigate to "Create a resource" and select "Virtual Machine". Configure VM details (e.g., Ubuntu Server, Standard B2ms). Place frontend VMs in the frontend subnet, backend VMs in the backend subnet, and security components in the DMZ subnet.</p>
+        <pre><code># Azure CLI command to create VMs
+az vm create --resource-group FintechResourceGroup --name FrontendVM --image UbuntuLTS --vnet-name FintechVNet --subnet FrontendSubnet --admin-username azureuser --generate-ssh-keys
+az vm create --resource-group FintechResourceGroup --name BackendVM --image UbuntuLTS --vnet-name FintechVNet --subnet BackendSubnet --admin-username azureuser --generate-ssh-keys
+az vm create --resource-group FintechResourceGroup --name DMZVM --image UbuntuLTS --vnet-name FintechVNet --subnet DMZSubnet --admin-username azureuser --generate-ssh-keys
+        </code></pre>
+
+        <h2>3. Configure Network Security Groups (NSGs)</h2>
+        <h3>Create NSGs</h3>
+        <p>Go to "Create a resource" and select "Network Security Group". Add inbound and outbound security rules to control traffic flow between subnets and from the internet.</p>
+        <pre><code># Azure CLI commands to create NSG and rules
+az network nsg create --resource-group FintechResourceGroup --name FrontendNSG
+az network nsg rule create --resource-group FintechResourceGroup --nsg-name FrontendNSG --name AllowHTTP --protocol tcp --direction inbound --priority 1000 --source-address-prefix '*' --source-port-range '*' --destination-address-prefix '*' --destination-port-range 80 --access allow
+az network nsg create --resource-group FintechResourceGroup --name BackendNSG
+az network nsg rule create --resource-group FintechResourceGroup --nsg-name BackendNSG --name AllowSQL --protocol tcp --direction inbound --priority 1000 --source-address-prefix 10.0.1.0/24 --source-port-range '*' --destination-address-prefix '*' --destination-port-range 1433 --access allow
+        </code></pre>
+
+        <h2>4. Implement Azure Firewall</h2>
+        <h3>Create Azure Firewall</h3>
+        <p>Go to "Create a resource" and select "Firewall". Configure the firewall to centralize network security policies.</p>
+        <pre><code># Azure CLI commands to create Azure Firewall
+az network firewall create --name FintechFirewall --resource-group FintechResourceGroup --vnet-name FintechVNet --location eastus
+az network firewall network-rule create --firewall-name FintechFirewall --resource-group FintechResourceGroup --collection-name 'AllowSQL' --name 'Allow-SQL' --protocols 'TCP' --source-addresses '*' --destination-addresses '10.0.2.0/24' --destination-ports '1433' --action 'Allow' --priority 100
+        </code></pre>
+
+        <h2>5. Set Up Azure Key Vault</h2>
+        <h3>Create Azure Key Vault</h3>
+        <p>Go to "Create a resource" and select "Key Vault". Store sensitive information such as database connection strings, API keys, and certificates.</p>
+        <pre><code># Azure CLI commands to create Key Vault and add secrets
+az keyvault create --name FintechKeyVault --resource-group FintechResourceGroup --location eastus
+az keyvault secret set --vault-name FintechKeyVault --name "DbConnectionString" --value "Server=myserver.database.windows.net;Database=mydb;User Id=myuser;Password=mypassword;"
+        </code></pre>
+
+        <h2>6. Set Up Azure Application Gateway with WAF</h2>
+        <h3>Create Application Gateway</h3>
+        <p>Go to "Create a resource" and select "Application Gateway". Configure the application gateway with frontend IP, backend pool, and routing rules. Enable Web Application Firewall (WAF) for additional security.</p>
+        <pre><code># Azure CLI commands to create Application Gateway
+az network application-gateway create --resource-group FintechResourceGroup --name FintechAppGateway --capacity 2 --sku WAF_v2 --vnet-name FintechVNet --subnet AppGatewaySubnet --frontend-port 80 --http-settings-cookie-based-affinity Enabled --routing-rule-type Basic
+        </code></pre>
+
+        <h2>7. Configure Azure SQL Database</h2>
+        <h3>Create Azure SQL Database</h3>
+        <p>Go to "Create a resource" and select "SQL Database". Configure the database with firewall rules to restrict access.</p>
+        <pre><code># Azure CLI commands to create SQL Database and set firewall rules
+az sql server create --name FintechSqlServer --resource-group FintechResourceGroup --location eastus --admin-user myadmin --admin-password mypassword
+az sql db create --resource-group FintechResourceGroup --server FintechSqlServer --name FintechDatabase --service-objective S1
+az sql server firewall-rule create --resource-group FintechResourceGroup --server FintechSqlServer --name AllowAzureIPs --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
+        </code></pre>
+
+        <h2>8. Implement Azure Bastion</h2>
+        <h3>Create Azure Bastion</h3>
+        <p>Go to "Create a resource" and select "Bastion". Configure Bastion to securely connect to your VMs without exposing RDP/SSH ports.</p>
+        <pre><code># Azure CLI commands to create Azure Bastion
+az network public-ip create --resource-group FintechResourceGroup --name BastionPublicIP --sku Standard --location eastus
+az network bastion create --name FintechBastion --resource-group FintechResourceGroup --vnet-name FintechVNet --public-ip-address BastionPublicIP --location eastus
+        </code></pre>
+
+        <h2>9. Set Up Azure Monitor and Azure Security Center</h2>
+        <h4>Enable Azure Monitor</h4>
+        <p>Go to "Create a resource" and select "Monitor". Configure monitoring for VMs, application gateway, and other resources.</p>
+        
+        <h4>Enable Azure Security Center</h4>
+        <p>Go to "Security Center" and enable it. Configure security policies and enable recommendations.</p>
+        <pre><code>
+
+        </code></pre>
+    
+        <h2>10. Set Up CI/CD with GitHub and Azure DevOps</h2>
+        <h3>Create a GitHub Repository</h3>
+        <p>Initialize a GitHub repository to store the fintech application code.</p>
+
+        <h3>Set Up Azure DevOps Project</h3>
+        <p>Navigate to Azure DevOps and create a new project. Link the GitHub repository to Azure DevOps.</p>
+
+        <h3>Create CI/CD Pipelines</h3>
+        <pre><code>name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Run tests
+        run: npm test
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Deploy to Azure
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'fintech-web-app'
+          slot-name: 'production'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        </code></pre>
+
+        <h2>Conclusion</h2>
+        <p>This project sets up a secure, scalable fintech application on Azure, integrating multiple Azure services and leveraging GitHub for version control and CI/CD. By following these steps, you can ensure your fintech application is robust, secure, and compliant with industry standards.</p>
+
+
+    <div class="configure now-page">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="search-box">
+                        <form id="subscribe" action="" method="get">
+                            <div class="row">
+                                <div class="col-lg-5">
+                                    <div class="search-heading">
+                                        <h4></h4>
+                                    </div>
+                                </div>
+                                <div class="col-lg-7">
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                        </div>
+                                        <div class="col-lg-3">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- *** Subscribe *** -->
+    <div class="subscribe">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <h4>Subscribe Our Newsletter:</h4>
+                </div>
+                <div class="col-lg-8">
+                    <form id="subscribe" action="" method="get">
+                        <div class="row">
+                          <div class="col-lg-9">
+                            <fieldset>
+                              <input name="email" type="text" id="email" pattern="[^ @]*@[^ @]*" placeholder="Your Email Address" required="">
+                            </fieldset>
+                          </div>
+                          <div class="col-lg-3">
+                            <fieldset>
+                              <button type="submit" id="form-submit" class="main-dark-button">Submit</button>
+                            </fieldset>
+                          </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- *** Footer *** -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="address">
+                        <h4>Finance Network Security</h4>
+                        <span>VYARA, <br>GUJARAT<br>INDIA</span>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="links">
+                        <h4>Useful Links</h4>
+                        <ul>
+                            <li><a href="#">Info</a></li>
+                            <li><a href="#">Venue</a></li>
+                            <li><a href="#">Guides</a></li>
+                            <li><a href="#">Videos</a></li>
+                            <li><a href="#">Outreach</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="hours">
+                        <h4>Open Hours</h4>
+                        <ul>
+                            <li>Mon to Fri: 10:00 AM to 8:00 PM</li>
+                            <li>Sat : 11:00 AM to 4:00 PM</li>
+                            <li>Sunday: Closed</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="under-footer">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <p>INDIA</p>
+                            </div>
+                            <div class="col-lg-6">
+                                <p class="copyright">Copyright 2024 JEM NETSEC 
+                    
+                    			<br>Design: <a rel="nofollow" href="" target="_parent">JEM NETSECe</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="sub-footer">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="logo"><span>JEM<em>NETSEC</em></span></div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="menu">
+                                    <ul>
+                                        <li><a href="index.html" class="active">Home</a></li>
+                                        <li><a href="about.html">About Us</a></li> 
+                                        <li><a href="tickets.html">Configure Now</a></li> 
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="social-links">
+                                    <ul>
+                                        <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                                        <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                                        <li><a href="#"><i class="fa fa-behance"></i></a></li>
+                                        <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="assets/js/jquery-2.1.0.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="assets/js/popper.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+
+    <!-- Plugins -->
+    <script src="assets/js/scrollreveal.min.js"></script>
+    <script src="assets/js/waypoints.min.js"></script>
+    <script src="assets/js/jquery.counterup.min.js"></script>
+    <script src="assets/js/imgfix.min.js"></script> 
+    <script src="assets/js/mixitup.js"></script> 
+    <script src="assets/js/accordions.js"></script>
+    <script src="assets/js/owl-carousel.js"></script>
+    
+    <!-- Global Init -->
+    <script src="assets/js/custom.js"></script>
+
+  </body>
+</html>
